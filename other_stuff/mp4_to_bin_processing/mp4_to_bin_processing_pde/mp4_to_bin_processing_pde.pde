@@ -26,18 +26,19 @@
 
 // To configure this program, edit the following:
 //
-//  1: Change myMovie to open a video file of your choice    ;-)
-//     Also change the output file name.
+//  1: Change names of MP4, RAW, and BIN.
 //
 //  2: Edit ledWidth, ledHeight, ledLayout for your LEDs
 //
-//  3: Edit framerate.  This configures the speed VideoSDcard
-//     will play your video data.  It's also critical for merging
-//     audio to be played by Teensy 3.1's digital to analog output.
+//  3: Edit framerate.  
 //
 
 // To create the Audiofile, install ffmpeg and use the following commandline:
-// ffmpeg -i "BigBuckBunny_512kb.mp4" -f s16le -ar 44100 -acodec pcm_s16le output.raw
+// ffmpeg -i "yourvideo.mp4" -f s16le -ar 44100 -acodec pcm_s16le output.raw
+
+
+//"error, disabling movieEvent() for processing" <-- sometimes fails and gets this error for longer videos
+//i cant figure out how to fix this
 
 import processing.video.*;
 import processing.serial.*;
@@ -52,7 +53,7 @@ boolean ledLayout = true;    // layout of rows, true = even is left->right
 //double framerate = 23.98;    // You MUST set this to the movie's frame rate
                              // Processing does not seem to have a way to detect it.
                              
- double framerate = 25;    // not sure why premiere exported 25 :U
+ double framerate = 23.976;    // 
 
 float gamma = 1.8;
 PImage ledImage;
@@ -63,8 +64,7 @@ boolean fileopen=true;
 int audioidx=0;
 FileOutputStream myFile;
 
-//Movie myMovie = new Movie(this, "/Users/paul/myvideo.mov");
-Movie myMovie = new Movie(this, "/Users/Fuzzy/Downloads/wake_up_wake_up.mp4"); 
+Movie myMovie = new Movie(this, "/Users/Fuzzy/Downloads/wake_up_wake_up_29_5.mp4"); 
 
 byte[] audiobytes;
 byte[] fileHeader =  new byte[512];
@@ -74,13 +74,13 @@ void setup() {
   loop_count = 0;
   
   try {
-    audiobytes = loadBytes("/Users/Fuzzy/Downloads/audio.raw");
+    audiobytes = loadBytes("/Users/Fuzzy/Downloads/audio5.raw");
   } catch (Exception e) {
     exit();
   }
   
   try {
-    myFile = new FileOutputStream("/Users/Fuzzy/Downloads/wake_up_wake_up.bin");
+    myFile = new FileOutputStream("/Users/Fuzzy/Downloads/wake_up_wake_up_5.bin");
     
   } catch (Exception e) {
     exit();
@@ -133,7 +133,7 @@ void movieEvent(Movie m) {
   try {
     myFile.write(ledData);
   } catch (Exception e) {    
-    println("uhoh");
+    //println("uhoh");
     exit();
   }
 }
